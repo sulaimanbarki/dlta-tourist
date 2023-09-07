@@ -8,6 +8,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/api', apiRoutes);
+app.use('/', function (req, res) {
+    res.send('Welcome to the API');
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
