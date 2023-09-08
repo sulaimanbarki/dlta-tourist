@@ -28,12 +28,10 @@ app.use(allowCors);
 
 app.use('/api', apiRoutes);
 app.use('/', function (req, res) {
-    res.send('Welcome to the API');
+    res.send('Welcome to the API, working');
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-
-
     console.log(`Server is running on port ${PORT}`);
 });
