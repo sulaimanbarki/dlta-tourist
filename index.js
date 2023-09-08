@@ -8,9 +8,9 @@ const corsOptions = {
     credentials: true,            //access-control-allow-credentials:true
     optionSuccessStatus: 200
 }
+const app = express();
 app.use(cors(corsOptions));
 
-const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -21,7 +21,7 @@ app.use('/', function (req, res) {
     res.send('Welcome to the API, working');
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
