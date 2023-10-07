@@ -7,15 +7,14 @@ const mongoose = require("mongoose");
 const authRouter = require("./routes/auth");
 const corsOptions = {
     origin: '*',
-    optionsSuccessStatus: 200
 };
 
 const app = express();
 app.use(cors(corsOptions))
 
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+// app.use(bodyParser.urlencoded({ extended: true }));
 
 
 app.use("/auth", authRouter);
