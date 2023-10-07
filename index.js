@@ -5,10 +5,13 @@ var cors = require('cors')
 const connectDB = require("./config/dbConn");
 const mongoose = require("mongoose");
 const authRouter = require("./routes/auth");
-
+const corsOptions = {
+    origin: '*',
+    optionsSuccessStatus: 200
+};
 
 const app = express();
-app.use(cors())
+app.use(cors(corsOptions))
 
 
 app.use(bodyParser.json());
