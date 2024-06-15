@@ -36,6 +36,9 @@ const siginUser = async (req, res) => {
                 .status(500)
                 .json({ msgErr: "Either email or password is wrong" });
         }
+
+        console.log(user);
+        return;
         const { _id, ...rest } = user;
         console.log(rest);
         const token = jwt.sign(rest, "secret");
@@ -64,9 +67,9 @@ const signUpUser = async (req, res) => {
 
     try {
         const user = await userModel.findOne({ email: email });
-        if (user) {
-            return res.status(500).json({ msgErr: `${email} is already in use` });
-        }
+        // if (user) {
+        //     return res.status(500).json({ msgErr: `${email} is already in use` });
+        // }
 
         const verificationToken = jwt.sign({ email: email }, 'secret', { expiresIn: '1h' });
         const mailOptions = {
@@ -107,24 +110,42 @@ const verifyEmail = async (req, res) => {
     const { token } = req.query;
     
     try {
+        console.log(`Received token: ${token}`);
+        
+        // Verify the token
         const decoded = jwt.verify(token, 'secret');
+        console.log(`Decoded token: ${JSON.stringify(decoded)}`);
         const email = decoded.email;
 
-        const user = await userModel.findOneAndUpdate(
-            { email: email, verificationToken: token },
-            { isVerified: true, verificationToken: null }
-        );
-
+        // Step 1: Find the user
+        const user = await userModel.findOne({ email: email, verificationToken: token });
         if (!user) {
+            console.log("User not found or token invalid");
             return res.status(400).json({ msgErr: "Invalid or expired token" });
         }
 
+        console.log(`User found: ${JSON.stringify(user)}`);
+
+        // Step 2: Update the user
+        const updateResult = await userModel.updateOne(
+            { _id: user._id },
+            { $set: { isVerified: 1, verificationToken: null } }
+        );
+
+        if (updateResult.modifiedCount === 0) {
+            console.log("Failed to update user");
+            return res.status(500).json({ msgErr: "Failed to verify email" });
+        }
+
+        console.log(`User verified: ${JSON.stringify(user)}`);
         res.status(200).json({ msg: "Email verified successfully" });
     } catch (error) {
-        console.log(error);
+        console.log(`Error during verification: ${error}`);
         res.status(500).json({ msgErr: "An error occurred during email verification" });
     }
 };
+
+
 
 const verifyOtpCode = async (req, res) => { };
 
